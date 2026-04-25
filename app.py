@@ -1,51 +1,55 @@
 from flask import Flask, request, jsonify
+from reportanalyser import analyze_report
+import os
 
 app = Flask(__name__)
 
-@app.route("/")
+# Allow file uploads (up to 16MB)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+
+# ✅ Home route (for testing API is alive)
+@app.route('/')
 def home():
-    return "AI Health Analyzer Running 🚀"
+    return "Health API is running 🚀"
 
 
-@app.route("/health", methods=["GET"])
-def health():
-    return jsonify({"status": "API working ✅"})
-
-
-# ✅ THIS WAS MISSING
-@app.route("/analyze", methods=["POST"])
+# ✅ Main API endpoint
+@app.route('/analyze', methods=['POST'])
 def analyze():
-    print("API HIT")
-
-    # import here to avoid crash at startup
-    from reportanalyser import analyze_report
-
-    if "file" not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    file = request.files["file"]
-
-    if file.filename == "":
-        return jsonify({"error": "Empty filename"}), 400
-
     try:
-        file_path = "uploaded_report.jpg"
+        # Debug log (check Railway logs)
+        print("FILES RECEIVED:", request.files)
+
+        # ❌ If no file
+        if 'file' not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
+
+        file = request.files['file']
+
+        # ❌ If empty filename
+        if file.filename == '':
+            return jsonify({"error": "Empty file"}), 400
+
+        # ✅ Save file temporarily
+        file_path = "temp.jpg"
         file.save(file_path)
 
-        print("📂 File saved:", file_path)
-
+        # ✅ Process report
         result = analyze_report(file_path)
-
-        print("✅ RESULT:", result)
 
         return jsonify(result)
 
     except Exception as e:
-        print("❌ ERROR:", str(e))
+        # 🔴 Catch all errors
         return jsonify({"error": str(e)}), 500
 
+    finally:
+        # 🧹 Cleanup file
+        if os.path.exists("temp.jpg"):
+            os.remove("temp.jpg")
 
-# ✅ THIS MUST BE OUTSIDE ALL FUNCTIONS
-if __name__ == "__main__":
-    print("🚀 STARTING FLASK SERVER...")
+
+# ✅ Run locally
+if __name__ == '__main__':
     app.run(debug=True)
