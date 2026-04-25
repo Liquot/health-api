@@ -74,7 +74,9 @@ def get_recommendation(data):
     ]]
 
     model = load_model()
-    prediction = model.predict(data)
+    prediction = model.predict(input_data)
+
+    pred = prediction[0]
 
     return {
         "values": data,
