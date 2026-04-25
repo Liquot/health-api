@@ -20,16 +20,20 @@ def extract_values(text):
     # Hemoglobin
     hb = re.search(r'Hemoglobin.*?(\d+\.?\d*)', text, re.I)
     data['hemoglobin'] = float(hb.group(1)) if hb else None
-    
+
+    # Vitamin B12
     b12 = re.search(r'Vitamin B12\s+(\d+\.?\d*)', text, re.I)
     data['b12'] = float(b12.group(1)) if b12 else None
-    
+
+    # Vitamin D
     vitd = re.search(r'Vitamin D.*?(\d+\.?\d*)', text, re.I)
     data['vitamin_d'] = float(vitd.group(1)) if vitd else None
-    
+
+    # Cholesterol
     chol = re.search(r'Cholesterol.*?(\d+\.?\d*)', text, re.I)
     data['cholesterol'] = float(chol.group(1)) if chol else None
-    
+
+    # Calcium
     cal = re.search(r'Calcium\s+(\d+\.?\d*)', text, re.I)
     data['calcium'] = float(cal.group(1)) if cal else None
 
