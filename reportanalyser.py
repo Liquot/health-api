@@ -73,18 +73,19 @@ def analyze_report(image_path):
     recommendations = get_recommendation(data)
 
     # Health insights
+    # Health insights
     insights = []
-
-    if data['hemoglobin'] < 12:
+    
+    if data['hemoglobin'] is not None and data['hemoglobin'] < 12:
         insights.append("Low Hemoglobin → Risk of anemia")
-
-    if data['vitamin_d'] < 20:
+    
+    if data['vitamin_d'] is not None and data['vitamin_d'] < 20:
         insights.append("Low Vitamin D → Bone weakness risk")
-
-    if data['b12'] < 300:
+    
+    if data['b12'] is not None and data['b12'] < 300:
         insights.append("Low Vitamin B12 → Fatigue / nerve issues")
-
-    if data['cholesterol'] > 200:
+    
+    if data['cholesterol'] is not None and data['cholesterol'] > 200:
         insights.append("High Cholesterol → Heart risk")
 
     return {
