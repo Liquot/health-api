@@ -2,7 +2,18 @@ import joblib
 from rules import supplement_advice, diet_advice, menstrual_diet, warning_engine
 
 # Load trained model
-model = joblib.load("newmodel.pkl")
+import joblib
+import os
+
+model = None
+
+def load_model():
+    global model
+    if model is None:
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(BASE_DIR, "newmodel.pkl")
+        model = joblib.load(model_path)
+    return model
 
 
 # ------------------ SUPPLEMENT ADVICE ------------------
@@ -62,7 +73,8 @@ def get_recommendation(data):
         data['heavy_bleeding'], data['pcos_risk']
     ]]
 
-    pred = model.predict(input_data)[0]
+    model = load_model()
+    prediction = model.predict(data)
 
     return {
         "values": data,

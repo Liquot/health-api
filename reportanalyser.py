@@ -1,15 +1,11 @@
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = "/opt/homebrew/bin/tesseract"
-import pytesseract
 from PIL import Image
 import re
 from model import get_recommendation
 
 
 def extract_text(image_path):
-    img = Image.open(image_path)
-    text = pytesseract.image_to_string(img)
-    return text
+    # Temporary dummy OCR (for deployment)
+    return "Hemoglobin 13 Vitamin B12 400 Vitamin D 30 Cholesterol 180 Calcium 9"
 
 
 def clean_text(text):
