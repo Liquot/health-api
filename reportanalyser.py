@@ -7,14 +7,17 @@ import requests
 import base64
 import os
 
-def extract_text(image_path):
-    import requests
-    import base64
+import requests
+import base64
+import os
 
+def extract_text(image_path):
     with open(image_path, "rb") as img:
         img_base64 = base64.b64encode(img.read()).decode()
 
-    url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCDfI711POuEDVKmF0WftmMOiaelA0nBFE"
+    API_KEY = os.getenv("VISION_API_KEY")  # safer
+
+    url = f"https://vision.googleapis.com/v1/images:annotate?key={AIzaSyCDfI711POuEDVKmF0WftmMOiaelA0nBFE}"
 
     body = {
         "requests": [
@@ -27,19 +30,14 @@ def extract_text(image_path):
 
     response = requests.post(url, json=body)
     result = response.json()
+
     print("FULL GOOGLE RESPONSE:", result)
 
-    # 👉 Extract text
     if "responses" in result:
-    extracted_text = result["responses"][0].get("fullTextAnnotation", {}).get("text", "")
+        return result["responses"][0].get("fullTextAnnotation", {}).get("text", "")
     else:
-    print("OCR FAILED:", result)
-    extracted_text = ""
-
-    # 🔥 ADD THIS LINE HERE
-    print("OCR TEXT:", extracted_text)
-
-    return extracted_text
+        print("OCR FAILED:", result)
+        return ""
 
 
 def clean_text(text):
