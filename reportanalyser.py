@@ -27,9 +27,14 @@ def extract_text(image_path):
 
     response = requests.post(url, json=body)
     result = response.json()
+    print("FULL GOOGLE RESPONSE:", result)
 
     # 👉 Extract text
+    if "responses" in result:
     extracted_text = result["responses"][0].get("fullTextAnnotation", {}).get("text", "")
+    else:
+    print("OCR FAILED:", result)
+    extracted_text = ""
 
     # 🔥 ADD THIS LINE HERE
     print("OCR TEXT:", extracted_text)
