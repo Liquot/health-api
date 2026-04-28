@@ -8,31 +8,33 @@ import base64
 import os
 
 def extract_text(image_path):
-    API_KEY = os.getenv("GOOGLE_API_KEY")
+    import requests
+    import base64
 
-    with open(image_path, "rb") as image_file:
-        content = base64.b64encode(image_file.read()).decode()
+    with open(image_path, "rb") as img:
+        img_base64 = base64.b64encode(img.read()).decode()
 
-    url = f"https://vision.googleapis.com/v1/images:annotate?key={API_KEY}"
+    url = "https://vision.googleapis.com/v1/images:annotate?key=YOUR_API_KEY"
 
-    payload = {
+    body = {
         "requests": [
             {
-                "image": {"content": content},
+                "image": {"content": img_base64},
                 "features": [{"type": "TEXT_DETECTION"}]
             }
         ]
     }
 
-    response = requests.post(url, json=payload)
+    response = requests.post(url, json=body)
     result = response.json()
 
-    try:
-        text = result["responses"][0]["fullTextAnnotation"]["text"]
-        print("OCR TEXT:", text)  # debug
-        return text
-    except:
-        return ""
+    # 👉 Extract text
+    extracted_text = result["responses"][0].get("fullTextAnnotation", {}).get("text", "")
+
+    # 🔥 ADD THIS LINE HERE
+    print("OCR TEXT:", extracted_text)
+
+    return extracted_text
 
 
 def clean_text(text):
