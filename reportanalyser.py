@@ -3,9 +3,36 @@ import re
 from model import get_recommendation
 
 
+import requests
+import base64
+import os
+
 def extract_text(image_path):
-    # Temporary dummy OCR (for deployment)
-    return "Hemoglobin 13 Vitamin B12 400 Vitamin D 30 Cholesterol 180 Calcium 9"
+    API_KEY = os.getenv("GOOGLE_API_KEY")
+
+    with open(image_path, "rb") as image_file:
+        content = base64.b64encode(image_file.read()).decode()
+
+    url = f"https://vision.googleapis.com/v1/images:annotate?key={API_KEY}"
+
+    payload = {
+        "requests": [
+            {
+                "image": {"content": content},
+                "features": [{"type": "TEXT_DETECTION"}]
+            }
+        ]
+    }
+
+    response = requests.post(url, json=payload)
+    result = response.json()
+
+    try:
+        text = result["responses"][0]["fullTextAnnotation"]["text"]
+        print("OCR TEXT:", text)  # debug
+        return text
+    except:
+        return ""
 
 
 def clean_text(text):
