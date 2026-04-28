@@ -101,6 +101,8 @@ def analyze_report(image_path):
 
     # Health insights
     # Health insights
+    # Health insights
+    # Health insights
     insights = []
     
     if data['hemoglobin'] is not None and data['hemoglobin'] < 12:
