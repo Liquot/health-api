@@ -14,7 +14,7 @@ def extract_text(image_path):
     with open(image_path, "rb") as img:
         img_base64 = base64.b64encode(img.read()).decode()
 
-    url = "https://vision.googleapis.com/v1/images:annotate?key=YOUR_API_KEY"
+    url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCDfI711POuEDVKmF0WftmMOiaelA0nBFE"
 
     body = {
         "requests": [
