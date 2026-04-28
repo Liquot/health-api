@@ -48,7 +48,7 @@ def menstrual_diet(data):
 def warning_engine(data, pred):
     w = []
 
-    if data['cholesterol'] > 200:
+    if data['cholesterol'] is not None and data['cholesterol'] > 200:
         w.append("Avoid oily food")
 
     if pred[6]:
