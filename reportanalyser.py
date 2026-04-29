@@ -11,11 +11,13 @@ import requests
 import base64
 import os
 
-def extract_text(image_path):
+ddef extract_text(image_path):
     with open(image_path, "rb") as img:
         img_base64 = base64.b64encode(img.read()).decode()
 
-    API_KEY = os.getenv("VISION_API_KEY")  # safer
+    API_KEY = os.getenv("VISION_API_KEY")
+
+    print("API KEY:", API_KEY)
 
     url = f"https://vision.googleapis.com/v1/images:annotate?key={API_KEY}"
 
@@ -23,7 +25,7 @@ def extract_text(image_path):
         "requests": [
             {
                 "image": {"content": img_base64},
-                "features": [{"type": "TEXT_DETECTION"}]
+                "features": [{"type": "DOCUMENT_TEXT_DETECTION"}]
             }
         ]
     }
