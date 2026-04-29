@@ -123,6 +123,7 @@ def analyze_report(image_path):
         insights.append("High Cholesterol → Heart risk")
 
     return {
+    "raw_text": text,   # 🔥 ADD THIS LINE
     "values": {
         "hemoglobin": data['hemoglobin'],
         "b12": data['b12'],
