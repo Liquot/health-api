@@ -7,17 +7,17 @@ import requests
 import base64
 import os
 
-import requests
-import base64
-import os
 
-ddef extract_text(image_path):
+def extract_text(image_path):
     with open(image_path, "rb") as img:
         img_base64 = base64.b64encode(img.read()).decode()
+        
 
     API_KEY = os.getenv("VISION_API_KEY")
 
-    print("API KEY:", API_KEY)
+    if not API_KEY:
+        print("ERROR: API KEY NOT FOUND")
+        return ""
 
     url = f"https://vision.googleapis.com/v1/images:annotate?key={API_KEY}"
 
@@ -30,12 +30,17 @@ ddef extract_text(image_path):
         ]
     }
 
-    response = requests.post(url, json=body)
-    result = response.json()
+    try:
+        response = requests.post(url, json=body, timeout=10)
+        result = response.json()
+        print("FULL GOOGLE RESPONSE:", result)
+    except Exception as e:
+        print("REQUEST ERROR:", str(e))
+        return ""
 
     print("FULL GOOGLE RESPONSE:", result)
 
-    if "responses" in result:
+    if "responses" in result and len(result["responses"]) > 0:
         return result["responses"][0].get("fullTextAnnotation", {}).get("text", "")
     else:
         print("OCR FAILED:", result)
