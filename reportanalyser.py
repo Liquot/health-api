@@ -17,7 +17,7 @@ def extract_text(image_path):
 
     API_KEY = os.getenv("VISION_API_KEY")  # safer
 
-    url = f"https://vision.googleapis.com/v1/images:annotate?key={AIzaSyCDfI711POuEDVKmF0WftmMOiaelA0nBFE}"
+    url = f"https://vision.googleapis.com/v1/images:annotate?key={API_KEY}"
 
     body = {
         "requests": [
