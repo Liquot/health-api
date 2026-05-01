@@ -3,21 +3,18 @@ import re
 from model import get_recommendation
 
 
-import requests
-import base64
-import os
-
-
 def extract_text(image_path):
+    import requests
+    import base64
+    import os
+
+    print("=== OCR FUNCTION STARTED ===")
+
     with open(image_path, "rb") as img:
         img_base64 = base64.b64encode(img.read()).decode()
-        
 
     API_KEY = os.getenv("VISION_API_KEY")
-
-    if not API_KEY:
-        print("ERROR: API KEY NOT FOUND")
-        return ""
+    print("API KEY:", API_KEY)
 
     url = f"https://vision.googleapis.com/v1/images:annotate?key={API_KEY}"
 
@@ -25,17 +22,23 @@ def extract_text(image_path):
         "requests": [
             {
                 "image": {"content": img_base64},
-                "features": [{"type": "DOCUMENT_TEXT_DETECTION"}]
+                "features": [{"type": "TEXT_DETECTION"}]
             }
         ]
     }
 
-    try:
-        response = requests.post(url, json=body, timeout=10)
-        result = response.json()
-        print("FULL GOOGLE RESPONSE:", result)
-    except Exception as e:
-        print("REQUEST ERROR:", str(e))
+    print("Sending request to Google...")
+
+    response = requests.post(url, json=body)
+
+    print("Response status:", response.status_code)
+
+    result = response.json()
+    print("FULL RESPONSE:", result)
+
+    if "responses" in result:
+        return result["responses"][0].get("fullTextAnnotation", {}).get("text", "")
+    else:
         return ""
 
     print("FULL GOOGLE RESPONSE:", result)
